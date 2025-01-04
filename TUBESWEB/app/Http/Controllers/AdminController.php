@@ -416,9 +416,98 @@ public function del_cities(Request $request)
     // Redirect ke halaman list facilities
     return redirect(route('list_facilities'));
    }
+
     //Facilities ends
 
 
+    // public function add_facilities(Request $request)
+    
+    // {
+    //     $title = "Add Facility";
+    //     $menu = "facilities";
+
+    //     $data = compact('title', 'menu');
+    //     return view('AdminPanel.facilities.form', $data);
+    // }
+
+    // public function facilities_added(Request $request)
+    // {
+    //     $valid = $request->validate([
+    //         'faci' => 'required|unique:facilities,faci',
+    //     ]);
+
+    //     $faci = new Facilities;
+    //     $faci->faci = $request->faci;
+    //     $faci->save();
+
+    //     $request->session()->flash('msg', 'Added...');
+    //     $request->session()->flash('msgst', 'success');
+
+    //     return redirect(route('list_facilities'));
+    // }
+
+    // public function del_facilities(Request $request)
+    // {
+    //     $valid = validator($request->route()->parameters(), [
+    //         'id' => 'exists:facilities,id'
+    //     ])->validate();
+    //     $id = $request->route()->parameter('id');
+
+    //     if ($valid) {
+    //         $faci = Facilities::findorfail($id);
+    //         $faci->delete();
+    //     }
+
+    //     $request->session()->flash('msg', 'Deleted...');
+    //     $request->session()->flash('msgst', 'danger');
+
+    //     return redirect(route('list_facilities'));
+    // }
+
+    // public function edit_facilities(Request $request)
+    // {
+    //     $id = $request->route()->parameter('id');
+    
+    //     // Validasi ID fasilitas
+    //     $request->validate([
+    //         'id' => 'exists:facilities,id',
+    //     ]);
+    
+    //     // Ambil data fasilitas
+    //     $faci = Facilities::findOrFail($id);
+    
+    //     // Set judul dan menu
+    //     $title = "Edit Facility";
+    //     $menu = "facilities";
+    
+    //     // Kirim data ke view
+    //     return view('AdminPanel.facilities.form', compact('title', 'menu', 'faci'));
+    // }
+    
+
+    // public function facilities_edited(Request $request)
+    // {
+    // $id = $request->route()->parameter('id');
+
+    // // Validasi ID dan input
+    // $request->validate([
+    //     'id' => 'exists:facilities,id',
+    //     'faci' => 'required|unique:facilities,faci,' . $id,
+    // ]);
+
+    // // Update data fasilitas
+    // $faci = Facilities::findOrFail($id);
+    // $faci->faci = $request->faci;
+    // $faci->save();
+
+    // // Set pesan sukses
+    // $request->session()->flash('msg', 'Edited...');
+    // $request->session()->flash('msgst', 'success');
+
+    // // Redirect ke halaman list facilities
+    // return redirect(route('list_facilities'));
+    // }
+    // //Facilities ends
 
     //Properties starts
     public function list_properties(Request $request)
