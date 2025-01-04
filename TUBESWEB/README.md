@@ -1,1 +1,0 @@
-# Properti Pedia
