@@ -318,8 +318,103 @@ public function del_cities(Request $request)
 }
     //Cities Ends
 
-  
+    //Facilities starts
+    public function list_facilities(Request $request)
+    {
+        return view('AdminPanel.facilities.list', [
+            'title' => 'Facilities List',
+            'menu' => 'facilities',
+            'faci' => Facilities::latest()->get(),
+        ]);
+    }
 
+    public function add_facilities(Request $request)
+    {
+        $title = "Add Facility";
+        $menu = "facilities";
+
+        $data = compact('title', 'menu');
+        return view('AdminPanel.facilities.form', $data);
+    }
+
+    public function facilities_added(Request $request)
+    {
+        $valid = $request->validate([
+            'faci' => 'required|unique:facilities,faci',
+        ]);
+
+        $faci = new Facilities;
+        $faci->faci = $request->faci;
+        $faci->save();
+
+        $request->session()->flash('msg', 'Added...');
+        $request->session()->flash('msgst', 'success');
+
+        return redirect(route('list_facilities'));
+    }
+
+    public function del_facilities(Request $request)
+    {
+        $valid = validator($request->route()->parameters(), [
+            'id' => 'exists:facilities,id'
+        ])->validate();
+        $id = $request->route()->parameter('id');
+
+        if ($valid) {
+            $faci = Facilities::findorfail($id);
+            $faci->delete();
+        }
+
+        $request->session()->flash('msg', 'Deleted...');
+        $request->session()->flash('msgst', 'danger');
+
+        return redirect(route('list_facilities'));
+    }
+
+    public function edit_facilities(Request $request)
+    {
+        $id = $request->route()->parameter('id');
+    
+        // Validasi ID fasilitas
+        $request->validate([
+            'id' => 'exists:facilities,id',
+        ]);
+    
+        // Ambil data fasilitas
+        $faci = Facilities::findOrFail($id);
+    
+        // Set judul dan menu
+        $title = "Edit Facility";
+        $menu = "facilities";
+    
+        // Kirim data ke view
+        return view('AdminPanel.facilities.form', compact('title', 'menu', 'faci'));
+    }
+    
+
+    public function facilities_edited(Request $request)
+    {
+    $id = $request->route()->parameter('id');
+
+    // Validasi ID dan input
+    $request->validate([
+        'id' => 'exists:facilities,id',
+        'faci' => 'required|unique:facilities,faci,' . $id,
+    ]);
+
+    // Update data fasilitas
+    $faci = Facilities::findOrFail($id);
+    $faci->faci = $request->faci;
+    $faci->save();
+
+    // Set pesan sukses
+    $request->session()->flash('msg', 'Edited...');
+    $request->session()->flash('msgst', 'success');
+
+    // Redirect ke halaman list facilities
+    return redirect(route('list_facilities'));
+    }
+    //Facilities ends
 
     //Properties starts
     public function list_properties(Request $request)
@@ -343,6 +438,86 @@ public function del_cities(Request $request)
         $data = compact('title', 'menu', 'city', 'cate', 'faci');
         return view('AdminPanel.properties.form', $data);
     }
+
+
+
+     //Gallary starts
+     public function list_gallary(Request $request)
+     {
+         $title = "Images Gallary";
+         $menu = "gallary";
+ 
+         $gal = gallary::with('Property')->latest()->get();
+ 
+         $data = compact('title', 'menu', 'gal');
+         return view('AdminPanel.gallary.list', $data);
+     }
+ 
+     public function get_gallary(Request $request)
+     {
+         $title = "Images Gallary";
+         $menu = "gallary";
+ 
+         $valid = validator($request->route()->parameters(), [
+             'id' => 'exists:properties,id'
+         ])->validate();
+         $id = $request->route()->parameter('id');
+         $pro = Property::where('id', $id)->first();
+         $gal = gallary::with('Property')->where('pro_id', '=', $id)->get();
+ 
+         $data = compact('title', 'menu', 'pro', 'gal', 'id');
+         return view('AdminPanel.gallary.list', $data);
+     }
+ 
+     public function set_gallary(Request $request)
+     {
+   
+     $request->validate([
+         'gallary.*' => 'image|mimes:png,jpg|max:2048',  
+         'id' => 'exists:properties,id'  
+     ]);
+ 
+     $id = $request->route()->parameter('id');
+     $images = $request->file('gallary');
+     foreach ($images as $img) {
+         $iname = date('Ym') . '-' . Str::random(10) . '.' . $img->extension();
+         $path = $img->storeAs('public/gallary/' . $id, $iname);
+ 
+         // Save the image path to the database
+         if ($path) {
+             Gallary::create([
+                 'pro_id' => $id,
+                 'gal_image' => $iname
+             ]);
+         }
+     }
+ 
+     // Redirect to the gallery page after saving the images
+     return redirect()->route('get_gallary', ['id' => $id]);
+     }
+ 
+     
+     public function del_gallary(Request $request)
+     {
+     $request->validate([
+         'id' => 'exists:properties,id',
+         'gid' => 'exists:gallaries,id'
+     ]);
+     $id = $request->route()->parameter('id');
+     $gid = $request->route()->parameter('gid');
+     $gal = Gallary::findOrFail($gid);
+     if ($gal->gal_image) {
+         $imagePath = 'public/gallary/' . $id . '/' . $gal->gal_image;
+         if (Storage::exists($imagePath)) {
+             Storage::delete($imagePath);
+         }
+     }
+     $gal->delete();
+     $request->session()->flash('msg', 'Image Deleted Successfully.');
+     $request->session()->flash('msgst', 'danger');
+     return redirect()->back();
+     }
+     //Gallary ends
 
 
 
