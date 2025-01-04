@@ -33,14 +33,14 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Id</th>
-                            <th>Public</th>
-                            <th>Property</th>
-                            <th>Price</th>
-                            <th>Featured</th>
+                            <th>Di Publish?</th>
+                            <th>Properti</th>
+                            <th>Harga</th>
+                            <th>Image Halaman</th>
                             <th>Purpose</th>
-                            <th>Category</th>
+                            <th>Kategori</th>
                             <th>Image</th>
-                            <th>City</th>
+                            <th>Kota</th>
                             <th>Gallery</th>
                             <th>Reviews</th>
                             <th>Action</th>

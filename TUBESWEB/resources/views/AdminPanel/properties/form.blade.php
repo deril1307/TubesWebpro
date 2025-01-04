@@ -43,7 +43,7 @@
                                                 <input class="form-check-input" type="checkbox" value="1" name="featured"
                                                 @if (!empty($pro)) @if ($pro->featured == 1) checked @endif @else {{ old('featured') ? 'checked' : '' }} @endif>
                                                 <label class="form-check-label">
-                                                    Featured
+                                                    Featured / Image Halaman
                                                 </label>
                                             </div>
                                         </div>
@@ -78,7 +78,7 @@
                                     </div>
                                     <div class="row mb-2">
                                         <div class="col-md-6">
-                                            <label class="form-label"><i class="fas fa-sign"></i> Purpose</label>
+                                            <label class="form-label"><i class="fas fa-sign"></i> Purpose / Tujuan</label>
                                             <div class="input-group">
                                                 <label class="input-group-text">Options</label>
                                                 <select class="form-select" name="purpose" required>
@@ -139,9 +139,9 @@
                                         <div class="col-md-6">
                                             <div class="form-label"><i class="fas fa-th-large"></i> Area</div>
                                             <div class="input-group">
-                                                <label class="input-group-text">Sq. Ft.</label>
+                                                <label class="input-group-text">Luas.</label>
                                                 <input type="number" class="form-control"
-                                                    value="@if (!empty($pro)){{ $pro->area }}@else{{ old('area') ?? 700 }}@endif" name="area" min="700" required>
+                                                    value="@if (!empty($pro)){{ $pro->area }}@else{{ old('area') ?? 400 }}@endif" name="area" min="700" required>
                                             </div>
                                             <div class="text-danger fst-italic lh-1">* @error('area'){{ $message }} @enderror
                                             </div>

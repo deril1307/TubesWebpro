@@ -64,11 +64,6 @@
                 <form id="searchFrm" action="{{ route('propSearch') }}" method="POST" class="d-flex me-3">
                     @csrf
                     <div class="input-group">
-                        <select class="form-select" name="purpose">
-                            <option value="sale" @if (!empty($purpose) && $purpose == 'sale') selected @endif>Sale</option>
-                            <option value="rent" @if (!empty($purpose) && $purpose == 'rent') selected @endif>Rent</option>
-                            <option value="*" @if (!empty($purpose) && $purpose == '*') selected @endif>All</option>
-                        </select>
                         <input type="search" class="form-control" name="search" placeholder="Search by Name" value="{{ $SecStr ?? '' }}">
                         <button class="btn btn-light" type="submit">
                             <i class="fas fa-search"></i>

@@ -1,4 +1,5 @@
-<nav id="sidebarMenu" class="col-md-3 col-lg-2 bg-light sidebar shadow-sm">
+<!-- Sidebar -->
+<nav id="sidebarMenu" class="d-md-block bg-light sidebar shadow-sm collapse" aria-labelledby="toggleSidebar">
     <div class="position-sticky py-4 px-3">
         <ul class="nav flex-column gap-3">
             <li class="nav-item">
@@ -50,17 +51,16 @@
                 </a>
             </li>
             @if ($user['type'] == 'R')
-            <li class="nav-item">
-                <a class="nav-link text-dark @if ($menu == 'users') active fw-bold @endif" href="{{ route('list_users') }}">
-                    <div class="d-flex align-items-center">
-                        <i class="fas fa-user me-2 text-primary fs-5"></i>
-                        <span>Users</span>
-                    </div>
-                </a>
-            </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark @if ($menu == 'users') active fw-bold @endif" href="{{ route('list_users') }}">
+                        <div class="d-flex align-items-center">
+                            <i class="fas fa-user me-2 text-primary fs-5"></i>
+                            <span>Users</span>
+                        </div>
+                    </a>
+                </li>
             @endif
         </ul>
-
         @if ($user['type'] == 'R' || 'A')
             <h6 class="mt-4 text-uppercase text-muted small">Change Password</h6>
             <ul class="nav flex-column">
@@ -76,5 +76,4 @@
         @endif
     </div>
 </nav>
-
 

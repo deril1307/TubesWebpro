@@ -1,11 +1,35 @@
 @extends('layouts.app')
-@push('title')
-    {{ $CMS['home_title'] ?? '' }}
-@endpush
-@push('meta')
-    {{ $CMS['home_meta'] ?? '' }}
-@endpush
+
 @section('content_box')
+<style>
+    .custom-card {
+        border: 2px solid #007bff;
+        border-radius: 15px;
+        transition: transform 0.3s;
+    }
+
+    .custom-card:hover {
+        transform: scale(1.05);
+    }
+
+    .custom-card img {
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+    }
+
+    .custom-card .card-body {
+        background-color: #f8f9fa;
+    }
+
+    .custom-carousel .carousel__slide {
+        padding: 10px;
+    }
+
+    .custom-carousel .carousel__slide .shadow {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+</style>
     <main>
         @include('layouts.carousel')
 
@@ -14,12 +38,12 @@
                 <div class="col-12 mb-5 text-center">
                     <h1>Categories</h1>
                 </div>
-                <div id="cat_cara" class="carousel">
+                <div id="cat_cara" class="carousel custom-carousel">
                     @forelse ($showcate as $item)
                         <div class="carousel__slide" style="width: 350px">
-                            <div class="shadow w-100 mx-auto">
+                            <div class="shadow w-100 mx-auto custom-card">
                                 <a class="" href="{{ route('show_category', $item->slug_name) }}">
-                                    <img style="height: 100%" class="w-100 rounded-top"
+                                    <img style="height: 100%" class="w-100"
                                         src="{{ asset('/storage/images/' . $item->image) }}" alt="{{ $item->name }}">
                                 </a>
                                 <a class="btn btn-outline-primary rounded-bottom btn-lg w-100"
@@ -28,7 +52,7 @@
                         </div>
                     @empty
                         <div class="carousel__slide" style="width: 350px">
-                            <div class="shadow w-100 mx-auto">
+                            <div class="shadow w-100 mx-auto custom-card">
                                 <a class="btn btn-outline-primary rounded-bottom btn-lg w-100" href="">Belum ada Kategorinya</a>
                             </div>
                         </div>
@@ -36,7 +60,6 @@
                 </div>
             </div>
 
-            <!-- START THE FEATURETTES -->
             <hr class="featurette-divider">
             <div class="row featurette">
                 @if (!empty($CMS['home_image']))
@@ -69,7 +92,7 @@
             <div class="row featurette">
                 @forelse ($newlyAdded as $item)
                     <div class="col-lg-4 col-md-6 mb-4">
-                        <div class="card mx-auto shadow">
+                        <div class="card mx-auto shadow custom-card">
                             <a href="{{ route('show_pro', $item->title_slug) }}">
                                 <img height="300px" class="card-img-top" src="{{ asset('/storage/property/' . $item->image) }}" alt="{{ $item->title }}">
                             </a>
@@ -113,7 +136,7 @@
                     <div class="row featurette">
                         @foreach ($cate->Pro as $item)
                             <div class="col-lg-4 col-md-6 mb-4">
-                                <div class="card mx-auto shadow">
+                                <div class="card mx-auto shadow custom-card">
                                     <a href="{{ route('show_pro', $item->title_slug) }}">
                                         <img height="300px" class="card-img-top" src="{{ asset('/storage/property/' . $item->image) }}" alt="{{ $item->title }}">
                                     </a>
