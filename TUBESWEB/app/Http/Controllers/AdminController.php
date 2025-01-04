@@ -520,6 +520,117 @@ public function del_cities(Request $request)
      //Gallary ends
 
 
+     //Reviews starts
+    public function list_reviews(Request $request)
+    {
+        $title = "Reviews List";
+        $menu = "reviews";
+
+        $reviews = Reviews::with('Users', 'Property')
+            ->latest()
+            ->get();
+        $data = compact('title', 'menu', 'reviews');
+        return view('AdminPanel.reviews.list', $data);
+    }
+
+    public function get_reviews(Request $request)
+    {
+        $title = "Reviews List";
+        $menu = "reviews";
+
+        $valid = validator($request->route()->parameters(), [
+            'id' => 'exists:properties,id'
+        ])->validate();
+        $id = $request->route()->parameter('id');
+        $pro = Property::where('id', $id)->first();
+        $reviews = Reviews::with('Users', 'Property')
+            ->where('pro_id', $id)
+            ->latest()
+            ->get();
+   
+
+        $data = compact('title', 'menu', 'pro', 'reviews', 'id');
+        return view('AdminPanel.reviews.list', $data);
+    }
+    
+    public function del_reviews(Request $request)
+    {
+        $valid = validator($request->route()->parameters(), [
+            // 'id' => 'exists:properties,id',
+            'rid' => 'exists:reviews,id'
+        ])->validate();
+        // $id = $request->route()->parameter('id');
+        $rid = $request->route()->parameter('rid');
+
+        if ($valid) {
+            $rev = Reviews::findorfail($rid);
+            $rev->delete();
+        }
+
+        $request->session()->flash('msg', 'Deleted...');
+        $request->session()->flash('msgst', 'danger');
+
+        // return redirect(route('get_reviews', $id));
+        return redirect()->back();
+    }
+    //Reviews ends
+
+    //Users starts
+    public function list_users(Request $request)
+    {
+        $title = "Users List";
+        $menu = "users";
+        $user = $request->session()->get('AdminUser');
+        $usersData = User::with('Data')->where('type', '!=', 'R')->latest()->get()->except($user['id']);
+
+        $data = compact('title', 'menu', 'usersData');
+        return view('AdminPanel.users.list', $data);
+    }
+
+    public function del_users(Request $request)
+    {
+        $valid = validator($request->route()->parameters(), [
+            'id' => 'exists:users,id'
+        ])->validate();
+        $id = $request->route()->parameter('id');
+
+        if ($valid) {
+            $usersData = User::findorfail($id);
+            $user_data = UserData::findorfail($id);
+            Storage::delete('public/userdata/' . $user_data->image);
+            $user_reviews = Reviews::where('u_id', $id);
+            $user_reviews->delete();
+            $usersData->delete();
+            $user_data->delete();
+        }
+
+        $request->session()->flash('msg', 'Deleted...');
+        $request->session()->flash('msgst', 'danger');
+
+        return redirect(route('list_users'));
+    }
+
+    public function update_user_type(Request $request)
+    {
+        $request->validate([
+            'user_type' => 'required|array',
+            'user_type.*' => 'required|in:A,U',
+        ]);
+    
+        foreach ($request->user_type as $id => $type) {
+            $user = User::find($id);
+            if ($user) {
+                $user->type = $type;
+                $user->save();
+            }
+        }
+    
+        return redirect()->back()->with('msg', 'User types updated successfully')->with('msgst', 'success');
+    }
+    
+    //Users ends
+
+
 
     //Chng Password Starts
     public function chng_password(Request $request)

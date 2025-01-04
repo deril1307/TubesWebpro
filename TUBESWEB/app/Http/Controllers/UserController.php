@@ -111,7 +111,88 @@ class UserController extends Controller
         return view('User.Profile', $data);
     }
     
-  
+    public function editeduserprofile(Request $request)
+    {
+        $user = $request->session()->get('user');
+        $userId = $user['id'];
+        $request->validate([
+            'name' => 'required|string',
+            'email' => 'required|email|unique:users,email,' . $userId . ',id',
+            'image' => 'mimes:png,jpg'
+        ]);
+        $user = User::with('Data')->findOrFail($userId);
+        $user->name = $request->name;
+        $user->email = $request->email;
+        $user_data = UserData::find($user->id);
+        if ($user_data === null) {
+            $user_data = new UserData;
+            $user_data->id = $user->id;
+            $user_data->save();
+        }
+        $user_data->about = $request->about;
+        if ($request->hasFile('image')) {
+            Storage::delete('public/userdata/' . $user_data->image);
+            $image = $request->file('image');
+            $iname = date('Ym') . '-' . rand() . '.' . $image->extension();
+            $store = $image->storeAs('public/userdata', $iname);
+            if ($store) {
+                $user_data->image = $iname;
+            }
+        }
+        $user->save();
+        $user_data->save();
+        $request->session()->put('user', $user);
+
+        return redirect(route('UserProfile'));
+    }
+    
+    //delete profile image using AJAX
+    public function del_profile_img(Request $request)
+    {
+        if ($request->ajax()) {
+            $userId = $request->session()->get('user')['id'];
+            $user_data = UserData::find($userId);
+            $res = Storage::delete('public/userdata/' . $user_data->image);
+            if ($res) {
+                $user_data->image = null;
+                $user_data->save();
+                $user = User::with('Data')->findOrFail($userId);
+                $request->session()->put('user', $user->toArray());
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    //Changing User's Password
+    public function user_chng_password(Request $request)
+    {
+        // dd($request);
+        $user = $request->session()->get('user');
+        $userId = $user['id'];
+        $title = $user['name'] . " | Change Password";
+        $menu = "none";
+
+        $data = compact('title', 'menu', 'user');
+        return view('User.chngPassword', $data);
+    }
+
+    public function user_save_password(Request $request)
+    {
+        $request->validate([
+            'old_password' => 'required',
+            'new_password' => 'required|confirmed'
+        ]);
+        $id = $request->session()->get('user')['id'];
+        $user = User::findOrFail($id);
+
+        $user->password = Hash::make($request->new_password);
+        $user->save();
+        $request->session()->forget('user');
+
+        return redirect()->back();
+    }
 
     
 }
